@@ -120,7 +120,7 @@ public class TextDisambiguitor {
                     total_pass = total_pass + 1 ;
                 }
                 catch (Exception e){
-                    continue;
+                	logger.error("Exception while finding avg similarity centroid",e);
                 }
             }
         }

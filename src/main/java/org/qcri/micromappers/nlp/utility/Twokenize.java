@@ -1,9 +1,7 @@
 package org.qcri.micromappers.nlp.utility;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,12 +10,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.datavec.api.util.ClassPathResource;
+import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 public class Twokenize {
-
+	private static Logger logger = Logger.getLogger(Twokenize.class);
     static List<String> stopwords;
-    static List<String> functualwords;
+    static List<String> punctualwords;
 
     static Pattern Contractions = Pattern.compile("(?i)(\\w+)(n['’′]t|['’′]ve|['’′]ll|['’′]d|['’′]re|['’′]s|['’′]m)$");
     static Pattern Whitespace = Pattern.compile("[\\s\\p{Zs}]+");
@@ -317,7 +316,7 @@ public class Twokenize {
         }
 
 
-        List<String> func_list = Arrays.asList(functualwords.get(0).toString().split(","));
+        List<String> func_list = Arrays.asList(punctualwords.get(0).toString().split(","));
         for(String funcword : func_list){
             if(token.equals(funcword)){
                 return true;
@@ -342,28 +341,26 @@ public class Twokenize {
     }
 
     private static void populateStopWords() throws Exception {
-        String filePath = new ClassPathResource("stopwords_minimal.txt").getFile().getAbsolutePath();
         stopwords = new ArrayList<>();
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath), Charset.forName("UTF-8")))
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new ClassPathResource("stopwords_minimal.txt").getInputStream())))
         {
             stopwords = br.lines().collect(Collectors.toList());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Exception in loading stopwords_minimal.txt file.", e);
         }
 
     }
 
     private static void populatePunctalWords() throws Exception{
-        String filePath = new ClassPathResource("punct_list.txt").getFile().getAbsolutePath();
-        functualwords = new ArrayList<>();
+        punctualwords = new ArrayList<>();
 
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath), Charset.forName("UTF-8")))
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new ClassPathResource("punct_list.txt").getInputStream())))
         {
-            functualwords = br.lines().collect(Collectors.toList());
+            punctualwords = br.lines().collect(Collectors.toList());
 
         } catch (IOException e) {
-            e.printStackTrace();
+        	logger.error("Exception in loading punct_list.txt file.", e);
         }
     }
 

@@ -20,8 +20,9 @@ public class ScheduledTasksService
 
 
 	@Scheduled(fixedDelay = 10 * 60 * 1000) // 10 minutes - in milliseconds
-	private void scheduledTaskUpdateCollections() {
+	private void scheduledTaskProcessTextDisambiguiton() {
 		try {
+			logger.info("scheduledTaskProcessTextDisambiguiton running after a fixed delay of 10 minutes");
 			textDisambiguityService.processText();
 		} catch (Exception e) {
 			logger.error("Exception while classifying disambiguate text.", e);

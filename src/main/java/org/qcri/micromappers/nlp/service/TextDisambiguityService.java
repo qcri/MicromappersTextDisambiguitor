@@ -37,7 +37,8 @@ public class TextDisambiguityService {
 			textDisambiguityList = findTop500ByStatusOrderById(Status.ONGOING);
 
 			if(CollectionUtils.isNotEmpty(textDisambiguityList)){
-
+				
+				logger.info("Processing "+textDisambiguityList.size() + " items");
 				for (TextDisambiguityAnalysis item : textDisambiguityList) {
 					double firstLabelScore = 0.0;
 					double secondLabelScore = 0.0;
