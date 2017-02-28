@@ -97,10 +97,17 @@ public class TextDisambiguitor {
 
     private TextDisambiguitorOutput findAvgSimilarity(String item, List<String> token_list){
         List<String> context_words = this.get_context_words(token_list);
-        double avg_first_label_centroid = getavgsimilarity_centroid(context_words.toArray(), firstLabelCentroid);
-        double avg_second_label_centroid = getavgsimilarity_centroid(context_words.toArray(), secondLabelCentroid);
+        double avg_first_label_centroid = 0;
+        double avg_second_label_centroid = 0;
+        try{
+        	avg_first_label_centroid = getavgsimilarity_centroid(context_words.toArray(), firstLabelCentroid);
+            avg_second_label_centroid = getavgsimilarity_centroid(context_words.toArray(), secondLabelCentroid);
 
-        return new TextDisambiguitorOutput(avg_first_label_centroid, avg_second_label_centroid);
+        }catch (Exception e) {
+			logger.error("Exception while calculating avg similarity");
+		}finally {
+			return new TextDisambiguitorOutput(avg_first_label_centroid, avg_second_label_centroid);
+		}
     }
 
 
@@ -120,7 +127,7 @@ public class TextDisambiguitor {
                     total_pass = total_pass + 1 ;
                 }
                 catch (Exception e){
-                	logger.error("Exception while finding avg similarity centroid",e);
+                	continue;
                 }
             }
         }
